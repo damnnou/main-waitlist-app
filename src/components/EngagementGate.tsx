@@ -24,7 +24,7 @@ export default function EngagementGate({ fid }: { fid: number | undefined }) {
         addToWaitlist(session?.user.fid as number, session?.user.wallet as string, context?.user.username);
     }, [session]);
 
-    const [copied, setCopied] = useState(false); // состояние для показа всплывашки
+    const [copied, setCopied] = useState(false);
 
     const handleShare = async () => {
         const shareData = {
@@ -36,9 +36,10 @@ export default function EngagementGate({ fid }: { fid: number | undefined }) {
         if (navigator.clipboard) {
             try {
                 await navigator.clipboard.writeText(shareData.url);
-                setCopied(true); // показать всплывашку
-                setTimeout(() => setCopied(false), 2000); // скрыть через 2 секунды
+                setCopied(true);
+                setTimeout(() => setCopied(false), 2000);
             } catch (err) {
+                console.error("Failed to copy link:", err);
                 alert("Failed to copy link");
             }
         } else {
@@ -93,7 +94,7 @@ export default function EngagementGate({ fid }: { fid: number | undefined }) {
                     ) : (
                         <Check bg size={52} />
                     )}
-                    <h2 className="text-lg font-semibold flex items-center">You're eligible!</h2>
+                    <h2 className="text-lg font-semibold flex items-center">{"You're eligible!"}</h2>
                     <p className="w-fit text-center">
                         Now connect your Farcaster <br /> to join the waitlist.
                     </p>
@@ -111,9 +112,10 @@ export default function EngagementGate({ fid }: { fid: number | undefined }) {
             ) : (
                 <div className="flex flex-col gap-4 items-center justify-center relative">
                     <Star bg size={52} />
-                    <h2 className="text-lg font-semibold flex items-center">You're in!</h2>
+                    <h2 className="text-lg font-semibold flex items-center">{"You're in!"}</h2>
                     <p className="w-fit text-center">
-                        Thanks for joining the waitlist. <br /> We'll reach out before the next drop
+                        Thanks for joining the waitlist. <br />
+                        {"We'll reach out before the next drop"}
                     </p>
 
                     <button
