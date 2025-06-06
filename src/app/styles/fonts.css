@@ -1,0 +1,14 @@
+@import url("https://fonts.googleapis.com/css2?family=Rubik:wght@500&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap");
+
+@font-face {
+    font-family: "MainFont";
+    src: url("/fonts/MainFont.otf") format("opentype");
+    font-weight: 500;
+    font-display: swap;
+    font-style: normal;
+}
+
+body {
+    font-family: "MainFont", "Inter", "Poppins", "Roboto", sans-serif;
+}

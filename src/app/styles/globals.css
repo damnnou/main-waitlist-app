@@ -1,0 +1,195 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+    --background: #f6f7f8; /* Светлый фон */
+    --primary: #000000; /* Цвет для заголовков */
+    --foreground: #000000; /* Цвет текста по умолчанию */
+
+    --dark-background: #1a1a1a; /* Темный фон */
+    --dark-primary: #000000; /* Цвет для заголовков */
+    --dark-foreground: #f6f7f8; /* Цвет текста по умолчанию */
+}
+
+.dark {
+    --background: #1a1a1a;
+    --primary: #000000;
+    --foreground: #f6f7f8;
+}
+
+body {
+    background: var(--background);
+    color: var(--foreground);
+    overflow-x: hidden;
+    padding: 1rem;
+    height: 100vh;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5 {
+    color: var(--primary);
+}
+
+h1 {
+    font-weight: bold;
+}
+
+p {
+    color: var(--foreground); /* Используйте переменную для текста */
+}
+
+.nav-shadow {
+    box-shadow: 0px 8px 32px rgba(0, 0, 0, 0.08);
+}
+
+.rubik {
+    font-family: "Rubik", sans-serif;
+    font-size: 26.48px;
+}
+
+.text-h1 {
+    font-size: 42px;
+    font-weight: 500;
+    line-height: 55px;
+}
+
+.text-h2 {
+    font-size: 24px;
+    font-weight: 500;
+    line-height: 32px;
+}
+
+.text-h3 {
+    font-size: 18px;
+    font-weight: 500;
+}
+
+.text-button {
+    font-size: 18px;
+    font-weight: 500;
+}
+
+.text-body {
+    font-size: 16px;
+    font-weight: 400;
+    font-family: "Inter", sans-serif;
+}
+
+.text-body-s {
+    font-size: 16px;
+    font-weight: 400;
+    font-family: "Inter", sans-serif;
+}
+
+.text-nav-footer {
+    font-size: 14px;
+    font-weight: 500;
+    font-family: "Inter", sans-serif;
+    color: #60606091;
+    transition: all;
+    transition-duration: 200ms;
+}
+
+.text-nav-footer:hover {
+    font-size: 14px;
+    font-weight: 500;
+    font-family: "Inter", sans-serif;
+    color: #606060;
+}
+
+@media (max-width: 1024px) {
+    .text-h1 {
+        font-size: 40px;
+        line-height: 50px;
+    }
+
+    .text-h2 {
+        font-size: 24px;
+        font-weight: 500;
+        line-height: 30px;
+    }
+
+    .text-body {
+        font-size: 18px;
+        font-weight: 400;
+        font-family: "Inter", sans-serif;
+    }
+
+    .text-button {
+        font-size: 18px;
+        font-weight: 500;
+    }
+}
+
+@keyframes slowPulse {
+    0%,
+    100% {
+        opacity: 0.8;
+    }
+    50% {
+        opacity: 0.6;
+    }
+}
+
+.slow-pulse {
+    animation: slowPulse 2s ease-in-out infinite;
+}
+
+.radial-gradient {
+    background: radial-gradient(78.96% 103.71% at 14.43% 23.44%, #f67fbc 0%, #555ff5 63.72%, #9effee 130%)
+        /* warning: gradient uses a rotation that is not supported by CSS and may not behave as expected */;
+}
+
+.roadmap-shield {
+    /* Frame 1948756779 */
+    background: radial-gradient(78.96% 103.71% at 14.43% 23.44%, #f67fbc 0%, #555ff5 63.72%, #9effee 130%)
+        /* warning: gradient uses a rotation that is not supported by CSS and may not behave as expected */;
+    border-radius: 12px;
+    font-size: 12px;
+    font-weight: 400;
+    font-family: "Inter", sans-serif;
+    text-transform: uppercase;
+}
+
+@media (max-width: 640px) {
+    .swiper-slide {
+        padding: 0 0;
+        box-sizing: border-box;
+    }
+}
+
+.swiper-button-next,
+.swiper-button-prev {
+    @apply flex lg:!h-12 lg:!w-12 !h-10 !w-10 items-center justify-center rounded-full bg-black/20 group-hover:bg-black/40 !text-white/60 duration-200 hover:!bg-black/80;
+}
+
+.swiper-button-next {
+    @apply lg:!-right-7 z-50 !right-0;
+}
+
+.swiper-button-prev {
+    @apply lg:!-left-7 !left-0;
+}
+
+.swiper-button-next:after,
+.swiper-button-prev:after {
+    @apply !text-sm;
+}
+
+.swiper-button-next.swiper-button-disabled,
+.swiper-button-prev.swiper-button-disabled {
+    @apply hidden;
+}
+
+html,
+body {
+    @apply lg:!snap-y lg:!snap-mandatory lg:!h-screen lg:scroll-smooth;
+}
+
+.section {
+    @apply lg:pt-8 lg:!snap-always lg:!snap-center w-full h-fit flex flex-col items-center justify-center;
+}
