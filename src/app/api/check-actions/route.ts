@@ -43,7 +43,7 @@ export async function GET(req: NextRequest) {
         const replies = castData?.result?.casts;
         const didRecastWithQuote = replies?.some((userCast: any) => userCast?.embeds?.casts?.some((c: any) => c.hash === cast.hash));
 
-        const eligible = didSuscribed && didLike && didRecast;
+        const eligible = didSuscribed && didLike && (didRecast || didRecastWithQuote);
 
         // console.log(replies);
         // console.log("didSuscribed", didSuscribed);
@@ -56,7 +56,7 @@ export async function GET(req: NextRequest) {
             JSON.stringify({
                 didSuscribed,
                 didLike,
-                didRecast,
+                didRecast: didRecast || didRecastWithQuote,
                 didRecastWithQuote,
                 eligible,
             }),

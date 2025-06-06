@@ -1,7 +1,9 @@
 import { ArrowUpRight } from "lucide-react";
 import { Check } from "./ui/Check";
-import Link from "next/link";
 import { cn } from "~/lib/utils";
+import sdk from "@farcaster/frame-sdk";
+
+const TARGET_CAST_HASH = "0x30d42443287b8bf1fb4d8f64143defee56d98eea";
 
 const titles = {
     like: "Like",
@@ -13,12 +15,6 @@ const descriptions = {
     like: "Like this post",
     recast: "Quote recast with a comment",
     subscribe: "Follow @MAIN_AI_DEX",
-};
-
-const links = {
-    like: "https://farcaster.xyz/celo/0x30d42443",
-    recast: "https://farcaster.xyz/celo/0x30d42443",
-    subscribe: "https://farcaster.xyz/celo",
 };
 
 const icons = {
@@ -78,6 +74,23 @@ const icons = {
     ),
 };
 
+const handleAction = (type: "like" | "recast" | "subscribe") => {
+    switch (type) {
+        case "like":
+            sdk.actions.viewCast({ hash: TARGET_CAST_HASH });
+            break;
+        case "recast":
+            sdk.actions.composeCast({
+                text: `@MAIN_AI_DEX: Truly AI-Powered DEX`,
+                embeds: [`${TARGET_CAST_HASH}`],
+            });
+            break;
+        case "subscribe":
+            sdk.actions.openUrl("https://farcaster.xyz/~/channel/celo");
+            break;
+    }
+};
+
 export function EngagementAction({
     type,
     isDone,
@@ -88,23 +101,23 @@ export function EngagementAction({
     isLoading?: boolean;
 }) {
     return (
-        <Link href={links[type]} target="_blank" className="group w-full">
-            <div
-                className={cn(
-                    "feature-card w-full p-4 flex items-center transition-all duration-200 justify-between bg-white rounded-[24px] shadow-lg",
-                    isDone ? "" : " group-hover:scale-105 "
-                )}
-            >
-                <div className="feature-card-content flex gap-4 items-center justify-center">
-                    <div className="w-[42px] h-[42px] rounded-full flex items-center justify-center">{icons[type]}</div>
-                    <div className={"flex flex-col gap-1 items-start justify-center"}>
-                        <h2 className="text-body text-center">{titles[type]}</h2>
-                        <p className=" text-center">{descriptions[type]}</p>
-                    </div>
+        <button
+            disabled={isDone}
+            onClick={() => handleAction(type)}
+            className={cn(
+                "feature-card w-full p-4 flex cursor-pointer items-center transition-all duration-200 justify-between bg-white rounded-[24px] shadow-lg",
+                isDone ? "" : " hover:scale-105 "
+            )}
+        >
+            <div className="feature-card-content flex gap-4 items-center justify-center">
+                <div className="w-[42px] h-[42px] rounded-full flex items-center justify-center">{icons[type]}</div>
+                <div className={"flex flex-col gap-1 items-start justify-center"}>
+                    <h2 className="text-body text-center">{titles[type]}</h2>
+                    <p className=" text-center">{descriptions[type]}</p>
                 </div>
-                {isLoading ? null : isDone ? <Check /> : <Redirect />}
             </div>
-        </Link>
+            {isLoading ? null : isDone ? <Check /> : <Redirect />}
+        </button>
     );
 }
 
