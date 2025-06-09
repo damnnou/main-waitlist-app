@@ -12,7 +12,7 @@ export default function MainPage() {
     }
 
     return (
-        <div className="flex flex-col items-center mx-auto max-w-[380px]  h-full">
+        <div className="flex flex-col items-center mx-auto max-w-[380px] w-full h-full">
             <Header username={context?.user.username} userLogoUrl={context?.user.pfpUrl} />
             <EngagementGate fid={context?.user.fid} />
         </div>

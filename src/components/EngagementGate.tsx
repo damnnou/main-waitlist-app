@@ -61,7 +61,7 @@ export default function EngagementGate({ fid }: { fid: number | undefined }) {
     return (
         <div className="w-full flex flex-col my-auto gap-4 items-center justify-center">
             {!eligible ? (
-                <div className="flex flex-col gap-4 items-center justify-center">
+                <div className="flex flex-col w-full gap-4 items-center justify-center">
                     <h1 className="text-h1 font-semibold flex items-center">Join Waitlist</h1>
                     <p className="w-fit text-center">Follow these steps to unlock access to the waitlist:</p>
                     <ul className="flex flex-col gap-4 text-sm w-full">
@@ -89,7 +89,7 @@ export default function EngagementGate({ fid }: { fid: number | undefined }) {
                     </Button>
                 </div>
             ) : !whitelisted ? (
-                <div className="flex flex-col gap-4 items-center justify-center">
+                <div className="flex flex-col gap-4 w-full  items-center justify-center">
                     {Boolean(session) || evmWalletLoading ? (
                         <div className="relative p-2 flex items-center justify-center min-w-[42px] min-h-[42px] rounded-full bg-neutral-200">
                             <Loader />
@@ -104,7 +104,7 @@ export default function EngagementGate({ fid }: { fid: number | undefined }) {
                     <button
                         disabled={Boolean(session) || evmWalletLoading}
                         onClick={handleSignIn}
-                        className="w-full flex duration-200 hover:scale-105 min-h-[56px] mx-auto rounded-xl shadow-lg items-center gap-2 justify-center bg-violet-500 text-white py-3 px-6  transition-all disabled:opacity-50 disabled:cursor-not-allowed "
+                        className="w-full max-w-64  flex duration-200 hover:scale-105 min-h-[56px] mx-auto rounded-xl shadow-lg items-center gap-2 justify-center bg-violet-500 text-white py-3 px-6  transition-all disabled:opacity-50 disabled:cursor-not-allowed "
                     >
                         <Zap size={18} /> Login with Farcaster
                     </button>
@@ -113,7 +113,7 @@ export default function EngagementGate({ fid }: { fid: number | undefined }) {
                     </button> */}
                 </div>
             ) : (
-                <div className="flex flex-col gap-4 items-center justify-center relative">
+                <div className="flex flex-col gap-4 w-full items-center justify-center relative">
                     <Star bg size={52} />
                     <h2 className="text-lg font-semibold flex items-center">{"You're in!"}</h2>
                     <p className="w-fit text-center">
@@ -123,7 +123,7 @@ export default function EngagementGate({ fid }: { fid: number | undefined }) {
 
                     <button
                         onClick={handleShare}
-                        className="w-full flex duration-200 hover:scale-105 min-h-[56px] mx-auto rounded-xl shadow-lg items-center gap-2 justify-center bg-violet-500 text-white py-3 px-6  transition-all disabled:opacity-50 disabled:cursor-not-allowed relative"
+                        className="w-full max-w-64 flex duration-200 hover:scale-105 min-h-[56px] mx-auto rounded-xl shadow-lg items-center gap-2 justify-center bg-violet-500 text-white py-3 px-6  transition-all disabled:opacity-50 disabled:cursor-not-allowed relative"
                     >
                         <Share size={18} /> Share this Mini App
                         {copied && (
