@@ -8,7 +8,7 @@ export default function MainPage() {
     const { isSDKLoaded, context } = useFrame();
 
     if (!isSDKLoaded) {
-        return <div>Loading...</div>;
+        return <div />;
     }
 
     return (
