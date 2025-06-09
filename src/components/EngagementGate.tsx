@@ -1,10 +1,8 @@
 import { EngagementAction } from "./EngagementAction";
 import { useEngagementActions } from "~/hooks/useEngagementActions";
 import { Button } from "./ui/Button";
-import { RotateCw, Share, Zap } from "lucide-react";
-import { Check } from "./ui/Check";
+import { RotateCw, Share } from "lucide-react";
 import { cn } from "~/lib/utils";
-import { useSignIn } from "~/hooks/useSignIn";
 import { useFrame } from "./providers/FrameProvider";
 import { useEffect, useState } from "react";
 import { useWaitlist } from "~/hooks/useWaitlist";
@@ -16,16 +14,16 @@ export default function EngagementGate({ fid }: { fid: number | undefined }) {
     const { eligible, didLike, didRecast, didSuscribed, refetch, isLoading: actionsLoading, isNewDataLoading } = useEngagementActions(fid);
 
     const { context } = useFrame();
-    const { handleSignIn, session } = useSignIn();
+    // const { handleSignIn, session, signInFailure, signingIn } = useSignIn();
 
     const { addToWaitlist, whitelisted, isLoading: waitlistLoading } = useWaitlist(fid);
 
     const { data: evmWallet, isLoading: evmWalletLoading } = useUserEVMWallet(fid);
 
     useEffect(() => {
-        if (whitelisted || !session?.user.fid || !evmWallet || !eligible || !context) return;
-        addToWaitlist(session.user.fid, session.user.wallet, evmWallet, context.user.username);
-    }, [addToWaitlist, context, eligible, evmWallet, session, whitelisted]);
+        if (whitelisted || !evmWallet || !eligible || !context) return;
+        addToWaitlist(context.user.fid, "", evmWallet, context.user.username);
+    }, [addToWaitlist, context, eligible, evmWallet, whitelisted]);
 
     const [copied, setCopied] = useState(false);
 
@@ -49,7 +47,7 @@ export default function EngagementGate({ fid }: { fid: number | undefined }) {
             alert("Sharing not supported on this browser");
         }
     };
-    const isLoading = waitlistLoading || actionsLoading;
+    const isLoading = waitlistLoading || actionsLoading || evmWalletLoading;
 
     if (isLoading)
         return (
@@ -88,31 +86,7 @@ export default function EngagementGate({ fid }: { fid: number | undefined }) {
                         <span className={cn("transition-opacity duration-300")}>Verify Engagement</span>
                     </Button>
                 </div>
-            ) : !whitelisted ? (
-                <div className="flex flex-col gap-4 w-full  items-center justify-center">
-                    {Boolean(session) || evmWalletLoading ? (
-                        <div className="relative p-2 flex items-center justify-center min-w-[42px] min-h-[42px] rounded-full bg-neutral-200">
-                            <Loader />
-                        </div>
-                    ) : (
-                        <Check bg size={52} />
-                    )}
-                    <h2 className="text-lg font-semibold flex items-center">{"You're eligible!"}</h2>
-                    <p className="w-fit text-center">
-                        Now connect your Farcaster <br /> to join the waitlist.
-                    </p>
-                    <button
-                        disabled={Boolean(session) || evmWalletLoading}
-                        onClick={handleSignIn}
-                        className="w-full max-w-64  flex duration-200 hover:scale-105 min-h-[56px] mx-auto rounded-xl shadow-lg items-center gap-2 justify-center bg-violet-500 text-white py-3 px-6  transition-all disabled:opacity-50 disabled:cursor-not-allowed "
-                    >
-                        <Zap size={18} /> Login with Farcaster
-                    </button>
-                    {/* <button className="w-full flex  duration-200 hover:scale-105 text-black min-h-[56px] mx-auto rounded-xl shadow-lg items-center gap-2 justify-center border border-black/60  py-3 px-6  transition-all disabled:opacity-50 disabled:cursor-not-allowed ">
-                        <Wallet size={18} /> Connect wallet
-                    </button> */}
-                </div>
-            ) : (
+            ) : whitelisted ? (
                 <div className="flex flex-col gap-4 w-full items-center justify-center relative">
                     <Star bg size={52} />
                     <h2 className="text-lg font-semibold flex items-center">{"You're in!"}</h2>
@@ -136,7 +110,34 @@ export default function EngagementGate({ fid }: { fid: number | undefined }) {
                         )}
                     </button>
                 </div>
+            ) : (
+                <div className="w-full flex flex-col my-auto gap-4 items-center justify-center">
+                    <Loader />
+                </div>
             )}
         </div>
     );
 }
+
+// : !whitelisted ? (
+//                 <div className="flex flex-col gap-4 w-full  items-center justify-center">
+//                     {Boolean(session) || evmWalletLoading || signingIn ? (
+//                         <div className="relative p-2 flex items-center justify-center min-w-[42px] min-h-[42px] rounded-full bg-neutral-200">
+//                             <Loader />
+//                         </div>
+//                     ) : (
+//                         <Check bg size={52} />
+//                     )}
+//                     <h2 className="text-lg font-semibold flex items-center">{"You're eligible!"}</h2>
+//                     <p className="w-fit text-center">
+//                         Now connect your Farcaster <br /> to join the waitlist.
+//                     </p>
+//                     <button
+//                         disabled={Boolean(session) || evmWalletLoading || signingIn}
+//                         onClick={handleSignIn}
+//                         className="w-full max-w-64  flex duration-200 hover:scale-105 min-h-[56px] mx-auto rounded-xl shadow-lg items-center gap-2 justify-center bg-violet-500 text-white py-3 px-6  transition-all disabled:opacity-50 disabled:cursor-not-allowed "
+//                     >
+//                         <Zap size={18} /> Login with Farcaster
+//                     </button>
+//                     {signInFailure && <p className="text-red-500 text-center">{signInFailure}</p>}
+//                 </div>
