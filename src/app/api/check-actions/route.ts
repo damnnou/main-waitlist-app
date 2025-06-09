@@ -4,7 +4,7 @@ import { MAIN_CHANNEL_ID, TARGET_CAST_HASH } from "~/lib/constants";
 
 const FARCASTER_BEARER_AUTH = process.env.FARCASTER_BEARER_AUTH;
 
-const FARCASTER_APP_BEARER = "wc_secret_f7dfffa9c12157ca8e5f3219c7d94cc5f67b7f4c5419c1fabd728a3a_84525966";
+const FARCASTER_APP_BEARER = process.env.FARCASTER_APP_BEARER;
 
 export async function GET(req: NextRequest) {
     const { searchParams } = new URL(req.url);
