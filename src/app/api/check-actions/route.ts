@@ -1,15 +1,10 @@
 import axios from "axios";
 import { NextRequest } from "next/server";
-import { NeynarAPIClient, Configuration } from "@neynar/nodejs-sdk";
-import { CastParamType } from "@neynar/nodejs-sdk/build/api";
-
-const config = new Configuration({
-    apiKey: process.env.NEYNAR_API_KEY!,
-});
-const client = new NeynarAPIClient(config);
 
 const MAIN_CHANNEL_ID = "celo";
-const TARGET_CAST_URL = "https://farcaster.xyz/celo/0x30d42443";
+const TARGET_CAST_HASH = "0x30d42443287b8bf1fb4d8f64143defee56d98eea";
+
+const FARCASTER_BEARER_AUTH = process.env.FARCASTER_BEARER_AUTH;
 
 export async function GET(req: NextRequest) {
     const { searchParams } = new URL(req.url);
@@ -28,22 +23,21 @@ export async function GET(req: NextRequest) {
         );
         const didSuscribed = subscribedToMainData.result.following;
 
-        const { cast } = await client.lookupCastByHashOrWarpcastUrl({
-            identifier: TARGET_CAST_URL,
-            type: CastParamType.Url,
+        const { data: userLikes } = await axios.get(`https://client.farcaster.xyz/v2/user-liked-casts?fid=${fid}&limit=50`, {
+            headers: {
+                "Content-Type": "application/json",
+                Authorization: FARCASTER_BEARER_AUTH,
+            },
         });
 
-        const likes = cast.reactions.likes;
-        const didLike = likes.some((like) => like.fid === fid);
-
-        const recasts = cast.reactions.recasts;
-        const didRecast = recasts.some((recast) => recast.fid === fid);
+        const likes = userLikes.result.casts;
+        const didLike = likes.some((like: any) => like.hash === TARGET_CAST_HASH);
 
         const { data: castData } = await axios.get(`https://client.farcaster.xyz/v2/casts?fid=${fid}&limit=50`);
         const replies = castData?.result?.casts;
-        const didRecastWithQuote = replies?.some((userCast: any) => userCast?.embeds?.casts?.some((c: any) => c.hash === cast.hash));
+        const didRecastWithQuote = replies?.some((userCast: any) => userCast?.embeds?.casts?.some((c: any) => c.hash === TARGET_CAST_HASH));
 
-        const eligible = didSuscribed && didLike && (didRecast || didRecastWithQuote);
+        const eligible = didSuscribed && didLike && didRecastWithQuote;
 
         // console.log(replies);
         // console.log("didSuscribed", didSuscribed);
@@ -56,7 +50,6 @@ export async function GET(req: NextRequest) {
             JSON.stringify({
                 didSuscribed,
                 didLike,
-                didRecast: didRecast || didRecastWithQuote,
                 didRecastWithQuote,
                 eligible,
             }),
