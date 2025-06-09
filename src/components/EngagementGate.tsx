@@ -20,9 +20,9 @@ export default function EngagementGate({ fid }: { fid: number | undefined }) {
     const { addToWaitlist, whitelisted, isLoading: waitlistLoading } = useWaitlist(fid);
 
     useEffect(() => {
-        if (whitelisted || !session || !eligible) return;
-        addToWaitlist(session?.user.fid as number, session?.user.wallet as string, context?.user.username);
-    }, [session]);
+        if (whitelisted || !session?.user.fid || !session?.user.wallet || !eligible || !context) return;
+        addToWaitlist(session.user.fid as number, session.user.wallet as string, context.user.username);
+    }, [addToWaitlist, context, eligible, session, whitelisted]);
 
     const [copied, setCopied] = useState(false);
 

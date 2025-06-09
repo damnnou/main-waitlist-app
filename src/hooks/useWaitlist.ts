@@ -37,7 +37,7 @@ export function useWaitlist(fid: number | undefined) {
                 setIsPosting(false);
             }
         },
-        [fid, mutate]
+        [mutate]
     );
 
     return {
