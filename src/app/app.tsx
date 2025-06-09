@@ -3,10 +3,10 @@
 import dynamic from "next/dynamic";
 
 // note: dynamic import is required for components that use the Frame SDK
-const Demo = dynamic(() => import("~/components/Demo"), {
+const MainPage = dynamic(() => import("~/pages/main"), {
     ssr: false,
 });
 
 export default function App() {
-    return <Demo />;
+    return <MainPage />;
 }

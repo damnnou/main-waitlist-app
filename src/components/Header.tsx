@@ -2,9 +2,10 @@ import React from "react";
 
 interface HeaderProps {
     username: string | undefined;
+    userLogoUrl: string | undefined;
 }
 
-const Header: React.FC<HeaderProps> = ({ username }) => {
+const Header: React.FC<HeaderProps> = ({ username, userLogoUrl }) => {
     return (
         <nav className="flex min-h-[56px] w-full justify-between items-center p-2.5 bg-white rounded-full shadow-xl">
             <div className="flex items-center gap-6">
@@ -18,8 +19,11 @@ const Header: React.FC<HeaderProps> = ({ username }) => {
                 </button>
             </div>
             {username ? (
-                <div className="flex items-center gap-4 rounded-full p-2 bg-background px-4">
-                    <span className="text-black">@{username}</span>
+                <div className="flex items-center gap-2 rounded-full p-2 bg-background">
+                    {userLogoUrl ? (
+                        <img src={userLogoUrl} alt="user-logo" className="rounded-full max-w-[28px] max-h-[28px]" width={28} height={28} />
+                    ) : null}
+                    <span className="text-black mr-1">{username}</span>
                 </div>
             ) : null}
         </nav>
