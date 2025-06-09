@@ -6,7 +6,7 @@ export async function POST(req: NextRequest) {
         const body = await req.json();
         const { fid, castody_wallet, evm_wallet, username } = body;
 
-        if (!fid || !castody_wallet || !evm_wallet) {
+        if (!fid || !evm_wallet) {
             return new Response(JSON.stringify({ error: "Missing fid or wallet" }), {
                 status: 400,
                 headers: { "Content-Type": "application/json" },
