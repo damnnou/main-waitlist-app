@@ -35,9 +35,9 @@ export async function GET(req: NextRequest) {
 
         const { data: castData } = await axios.get(`https://client.farcaster.xyz/v2/casts?fid=${fid}&limit=50`);
         const replies = castData?.result?.casts;
-        const didRecastWithQuote = replies?.some((userCast: any) => userCast?.embeds?.casts?.some((c: any) => c.hash === TARGET_CAST_HASH));
+        const didRecast = replies?.some((userCast: any) => userCast?.embeds?.casts?.some((c: any) => c.hash === TARGET_CAST_HASH));
 
-        const eligible = didSuscribed && didLike && didRecastWithQuote;
+        const eligible = didSuscribed && didLike && didRecast;
 
         // console.log(replies);
         // console.log("didSuscribed", didSuscribed);
@@ -50,7 +50,7 @@ export async function GET(req: NextRequest) {
             JSON.stringify({
                 didSuscribed,
                 didLike,
-                didRecastWithQuote,
+                didRecast,
                 eligible,
             }),
             {
