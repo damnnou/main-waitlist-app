@@ -2,8 +2,7 @@ import { ArrowUpRight } from "lucide-react";
 import { Check } from "./ui/Check";
 import { cn } from "~/lib/utils";
 import sdk from "@farcaster/frame-sdk";
-
-const TARGET_CAST_HASH = "0x30d42443287b8bf1fb4d8f64143defee56d98eea";
+import { TARGET_CAST_HASH } from "~/lib/constants";
 
 const titles = {
     like: "Like",

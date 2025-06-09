@@ -1,8 +1,6 @@
 import axios from "axios";
 import { NextRequest } from "next/server";
-
-const MAIN_CHANNEL_ID = "celo";
-const TARGET_CAST_HASH = "0x30d42443287b8bf1fb4d8f64143defee56d98eea";
+import { MAIN_CHANNEL_ID, TARGET_CAST_HASH } from "~/lib/constants";
 
 const FARCASTER_BEARER_AUTH = process.env.FARCASTER_BEARER_AUTH;
 
@@ -38,13 +36,6 @@ export async function GET(req: NextRequest) {
         const didRecast = replies?.some((userCast: any) => userCast?.embeds?.casts?.some((c: any) => c.hash === TARGET_CAST_HASH));
 
         const eligible = didSuscribed && didLike && didRecast;
-
-        // console.log(replies);
-        // console.log("didSuscribed", didSuscribed);
-        // console.log("didLike", didLike);
-        // console.log("didRecast", didRecast);
-        // console.log("didRecastWithQuote", didRecastWithQuote);
-        // console.log("eligible", eligible);
 
         return new Response(
             JSON.stringify({

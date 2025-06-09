@@ -10,6 +10,7 @@ import { useEffect, useState } from "react";
 import { useWaitlist } from "~/hooks/useWaitlist";
 import { Star } from "./ui/Star";
 import { Loader } from "./ui/Loader";
+import { useUserEVMWallet } from "~/hooks/useUserEVMWallet";
 
 export default function EngagementGate({ fid }: { fid: number | undefined }) {
     const { eligible, didLike, didRecast, didSuscribed, refetch, isLoading: actionsLoading, isNewDataLoading } = useEngagementActions(fid);
@@ -19,10 +20,12 @@ export default function EngagementGate({ fid }: { fid: number | undefined }) {
 
     const { addToWaitlist, whitelisted, isLoading: waitlistLoading } = useWaitlist(fid);
 
+    const { data: evmWallet, isLoading: evmWalletLoading } = useUserEVMWallet(fid);
+
     useEffect(() => {
-        if (whitelisted || !session?.user.fid || !session?.user.wallet || !eligible || !context) return;
-        addToWaitlist(session.user.fid as number, session.user.wallet as string, context.user.username);
-    }, [addToWaitlist, context, eligible, session, whitelisted]);
+        if (whitelisted || !session?.user.fid || !evmWallet || !eligible || !context) return;
+        addToWaitlist(session.user.fid, session.user.wallet, evmWallet, context.user.username);
+    }, [addToWaitlist, context, eligible, evmWallet, session, whitelisted]);
 
     const [copied, setCopied] = useState(false);
 
@@ -87,7 +90,7 @@ export default function EngagementGate({ fid }: { fid: number | undefined }) {
                 </div>
             ) : !whitelisted ? (
                 <div className="flex flex-col gap-4 items-center justify-center">
-                    {Boolean(session) ? (
+                    {Boolean(session) || evmWalletLoading ? (
                         <div className="relative p-2 flex items-center justify-center min-w-[42px] min-h-[42px] rounded-full bg-neutral-200">
                             <Loader />
                         </div>
@@ -99,7 +102,7 @@ export default function EngagementGate({ fid }: { fid: number | undefined }) {
                         Now connect your Farcaster <br /> to join the waitlist.
                     </p>
                     <button
-                        disabled={Boolean(session)}
+                        disabled={Boolean(session) || evmWalletLoading}
                         onClick={handleSignIn}
                         className="w-full flex duration-200 hover:scale-105 min-h-[56px] mx-auto rounded-xl shadow-lg items-center gap-2 justify-center bg-violet-500 text-white py-3 px-6  transition-all disabled:opacity-50 disabled:cursor-not-allowed "
                     >

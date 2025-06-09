@@ -4,9 +4,9 @@ import { db } from "~/lib/firebaseAdmin";
 export async function POST(req: NextRequest) {
     try {
         const body = await req.json();
-        const { fid, wallet, username } = body;
+        const { fid, castody_wallet, evm_wallet, username } = body;
 
-        if (!fid || !wallet) {
+        if (!fid || !castody_wallet || !evm_wallet) {
             return new Response(JSON.stringify({ error: "Missing fid or wallet" }), {
                 status: 400,
                 headers: { "Content-Type": "application/json" },
@@ -16,7 +16,8 @@ export async function POST(req: NextRequest) {
         const docRef = db.collection("Waitlist").doc(String(fid));
 
         await docRef.set({
-            wallet_address: wallet,
+            castody_wallet,
+            evm_wallet,
             username: username || null,
             joined_at: new Date(),
         });

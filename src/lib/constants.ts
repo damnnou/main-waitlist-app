@@ -12,3 +12,6 @@ export const APP_WEBHOOK_URL =
     process.env.NEYNAR_API_KEY && process.env.NEYNAR_CLIENT_ID
         ? `https://api.neynar.com/f/app/${process.env.NEYNAR_CLIENT_ID}/event`
         : `${APP_URL}/api/webhook`;
+
+export const MAIN_CHANNEL_ID = "celo";
+export const TARGET_CAST_HASH = "0x30d42443287b8bf1fb4d8f64143defee56d98eea";
