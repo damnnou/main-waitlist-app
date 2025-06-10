@@ -13,7 +13,7 @@ const titles = {
 const descriptions = {
     like: "Like this post",
     recast: "Quote recast with a comment",
-    subscribe: "Follow @MAIN_AI_DEX",
+    subscribe: "Follow @maindex",
 };
 
 const icons = {
@@ -110,7 +110,7 @@ Be the MAIN character of DeFi. Hit the mini-app, register your wallet, and lock 
             });
             break;
         case "subscribe":
-            sdk.actions.openUrl("https://farcaster.xyz/~/channel/celo");
+            sdk.actions.openUrl("https://farcaster.xyz/maindex");
             break;
     }
 };
