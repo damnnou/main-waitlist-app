@@ -112,13 +112,11 @@ export default function EngagementGate({ fid }: { fid: number | undefined }) {
                         {"We'll reach out before the next drop."}
                     </p>
 
-                    {walletInfo && (
-                        <div className="flex flex-col gap-0">
-                            <p>Wallet: {walletInfo.name}</p>
-                            <p>Address: {evmWallet}</p>
-                            <p>Type: {walletInfo.type}</p>
-                        </div>
-                    )}
+                    <div className="flex flex-col gap-0 text-center items-center justify-center text-xs">
+                        <p>Wallet: {walletInfo?.name}</p>
+                        <p>Address: {evmWallet}</p>
+                        <p>Type: {walletInfo?.type}</p>
+                    </div>
 
                     <button
                         onClick={handleShare}
@@ -142,13 +140,11 @@ export default function EngagementGate({ fid }: { fid: number | undefined }) {
                     <p className="w-fit text-center">
                         Now connect your wallet <br /> to join the waitlist.
                     </p>
-                    {walletInfo && (
-                        <div className="flex flex-col gap-0">
-                            <p>Wallet: {walletInfo.name}</p>
-                            <p>Address: {evmWallet}</p>
-                            <p>Type: {walletInfo.type}</p>
-                        </div>
-                    )}
+                    <div className="flex flex-col gap-0 text-center items-center justify-center text-xs">
+                        <p>Wallet: {walletInfo?.name}</p>
+                        <p>Address: {evmWallet}</p>
+                        <p>Type: {walletInfo?.type}</p>
+                    </div>
 
                     {!isFarcasterWalletDoesNotExist && (
                         <button
