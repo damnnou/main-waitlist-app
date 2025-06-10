@@ -101,7 +101,11 @@ const handleAction = (type: "like" | "recast" | "subscribe") => {
             break;
         case "recast":
             sdk.actions.composeCast({
-                text: `@MAIN_AI_DEX: Truly AI-Powered DEX`,
+                text: `AI isn't assisting anymore. It's the CEO now — fully in charge.
+
+Be the MAIN character of DeFi. Hit the mini-app, register your wallet, and lock in priority access.
+
+@maindex — powered by Algebra Labs.`,
                 embeds: [`${TARGET_CAST_HASH}`],
             });
             break;
