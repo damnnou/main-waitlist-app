@@ -1,28 +1,43 @@
 import { EngagementAction } from "./EngagementAction";
 import { useEngagementActions } from "~/hooks/useEngagementActions";
 import { Button } from "./ui/Button";
-import { RotateCw, Share } from "lucide-react";
+import { RotateCw, Share, Wallet, Zap } from "lucide-react";
 import { cn } from "~/lib/utils";
 import { useFrame } from "./providers/FrameProvider";
 import { useEffect, useState } from "react";
 import { useWaitlist } from "~/hooks/useWaitlist";
 import { Star } from "./ui/Star";
 import { Loader } from "./ui/Loader";
-import { useUserEVMWallet } from "~/hooks/useUserEVMWallet";
+import { useFarcasterWallet } from "~/hooks/useFarcasterWallet";
+import { useAccount, useConnect } from "wagmi";
+import { Check } from "./ui/Check";
+import { useAppKit } from "@reown/appkit/react";
 
 export default function EngagementGate({ fid }: { fid: number | undefined }) {
     const { eligible, didLike, didRecast, didSuscribed, refetch, isLoading: actionsLoading, isNewDataLoading } = useEngagementActions(fid);
 
     const { context } = useFrame();
-    // const { handleSignIn, session, signInFailure, signingIn } = useSignIn();
 
     const { addToWaitlist, whitelisted, isLoading: waitlistLoading } = useWaitlist(fid);
 
-    const { data: evmWallet, isLoading: evmWalletLoading } = useUserEVMWallet(fid);
+    const { isError: isFarcasterWalletDoesNotExist, data: farcasterWallet, isLoading: farcasterWalletLoading } = useFarcasterWallet(fid);
+
+    const { connect, connectors, isPending } = useConnect();
+
+    const { address: evmWallet } = useAccount();
+
+    const { open } = useAppKit();
 
     useEffect(() => {
-        if (whitelisted || !evmWallet || !eligible || !context) return;
-        addToWaitlist(context.user.fid, "", evmWallet, context.user.username);
+        connectors[0].disconnect();
+    }, []);
+
+    useEffect(() => {
+        if (whitelisted || !eligible || !context) return;
+
+        if (evmWallet) {
+            addToWaitlist(context.user.fid, evmWallet, context.user.username);
+        }
     }, [addToWaitlist, context, eligible, evmWallet, whitelisted]);
 
     const [copied, setCopied] = useState(false);
@@ -47,7 +62,7 @@ export default function EngagementGate({ fid }: { fid: number | undefined }) {
             alert("Sharing not supported on this browser");
         }
     };
-    const isLoading = waitlistLoading || actionsLoading || evmWalletLoading;
+    const isLoading = waitlistLoading || actionsLoading || farcasterWalletLoading;
 
     if (isLoading)
         return (
@@ -92,7 +107,7 @@ export default function EngagementGate({ fid }: { fid: number | undefined }) {
                     <h2 className="text-lg font-semibold flex items-center">{"You're in!"}</h2>
                     <p className="w-fit text-center">
                         Thanks for joining the waitlist. <br />
-                        {"We'll reach out before the next drop"}
+                        {"We'll reach out before the next drop."}
                     </p>
 
                     <button
@@ -111,8 +126,33 @@ export default function EngagementGate({ fid }: { fid: number | undefined }) {
                     </button>
                 </div>
             ) : (
-                <div className="w-full flex flex-col my-auto gap-4 items-center justify-center">
-                    <Loader />
+                <div className="flex flex-col gap-4 w-full items-center justify-center relative">
+                    {isPending ? <Loader /> : <Check bg size={52} />}
+                    <h2 className="text-lg font-semibold flex items-center">{"You're eligible!"}</h2>
+                    <p className="w-fit text-center">
+                        Now connect your wallet <br /> to join the waitlist.
+                    </p>
+
+                    {!isFarcasterWalletDoesNotExist && (
+                        <button
+                            disabled={isPending || !farcasterWallet}
+                            onClick={() => connect({ connector: connectors[0] })}
+                            className="w-full max-w-64  flex duration-200 hover:scale-105 min-h-[56px] mx-auto rounded-xl shadow-lg items-center gap-2 justify-center bg-violet-500 text-white py-3 px-6  transition-all disabled:opacity-50 disabled:cursor-not-allowed "
+                        >
+                            <Zap size={18} /> Login with Farcaster
+                        </button>
+                    )}
+                    <button
+                        disabled={isPending}
+                        onClick={() => {
+                            open({
+                                view: "Connect",
+                            });
+                        }}
+                        className="w-full max-w-64 flex duration-200 hover:scale-105 min-h-[56px] mx-auto rounded-xl shadow-lg items-center gap-2 justify-center bg-white border-black py-3 px-6  transition-all disabled:opacity-50 disabled:cursor-not-allowed relative"
+                    >
+                        <Wallet size={18} /> Connect External Wallet
+                    </button>
                 </div>
             )}
         </div>

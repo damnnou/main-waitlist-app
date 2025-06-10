@@ -13,7 +13,7 @@ export function useWaitlist(fid: number | undefined) {
     const [isPosting, setIsPosting] = useState(false);
 
     const addToWaitlist = useCallback(
-        async (fid: number, castody_wallet: string, evm_wallet: string, username?: string) => {
+        async (fid: number, evm_wallet: string, username?: string) => {
             if (!fid) return;
 
             setIsPosting(true);
@@ -22,7 +22,6 @@ export function useWaitlist(fid: number | undefined) {
             try {
                 const { data } = await axios.post("/api/waitlist", {
                     fid,
-                    castody_wallet,
                     evm_wallet,
                     username,
                 });
