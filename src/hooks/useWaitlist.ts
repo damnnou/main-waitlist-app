@@ -3,10 +3,13 @@ import useSWR from "swr";
 import { useState, useCallback } from "react";
 
 export function useWaitlist(fid: number | undefined) {
-    const { data, isLoading, mutate } = useSWR<boolean>(["checkWaitlist", fid], async () => {
+    const { data, isLoading, mutate } = useSWR<{
+        whitelisted: boolean;
+        data: { username: string; evm_wallet: string; joined_at: string } | null | undefined;
+    }>(["checkWaitlist", fid], async () => {
         if (!fid) return null;
         const { data } = await axios.get(`/api/waitlist?fid=${fid}`);
-        return data.whitelisted;
+        return data;
     });
 
     const [postError, setPostError] = useState<string | null>(null);
@@ -20,14 +23,25 @@ export function useWaitlist(fid: number | undefined) {
             setPostError(null);
 
             try {
-                const { data } = await axios.post("/api/waitlist", {
+                const { data: postData } = await axios.post("/api/waitlist", {
                     fid,
                     evm_wallet,
                     username,
                 });
 
-                if (data.success) {
-                    mutate(true, false);
+                if (postData.success) {
+                    mutate((prevData) => {
+                        if (!prevData) return prevData;
+                        return {
+                            ...prevData,
+                            whitelisted: true,
+                            data: {
+                                username: username || prevData.data?.username || "",
+                                evm_wallet,
+                                joined_at: new Date().toISOString(),
+                            },
+                        };
+                    }, false);
                 } else {
                     setPostError("Failed to add to waitlist");
                 }
@@ -41,7 +55,8 @@ export function useWaitlist(fid: number | undefined) {
     );
 
     return {
-        whitelisted: data,
+        whitelisted: data?.whitelisted,
+        whitelistedAddress: data?.data?.evm_wallet || null,
         isLoading: isLoading,
         addToWaitlist,
         isPosting,

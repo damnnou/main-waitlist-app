@@ -17,7 +17,7 @@ export default function EngagementGate({ fid }: { fid: number | undefined }) {
 
     const { context } = useFrame();
 
-    const { addToWaitlist, whitelisted, isLoading: waitlistLoading } = useWaitlist(fid);
+    const { addToWaitlist, whitelisted, isLoading: waitlistLoading, whitelistedAddress } = useWaitlist(fid);
 
     const { isError: isFarcasterWalletDoesNotExist, data: farcasterWallet, isLoading: farcasterWalletLoading } = useFarcasterWallet(fid);
 
@@ -114,7 +114,7 @@ export default function EngagementGate({ fid }: { fid: number | undefined }) {
 
                     <div className="flex flex-col gap-0 text-center items-center justify-center text-xs">
                         <p>Your Address: </p>
-                        <p>{evmWallet}</p>
+                        <p>{whitelistedAddress}</p>
                     </div>
 
                     <button
