@@ -25,7 +25,7 @@ export default function EngagementGate({ fid }: { fid: number | undefined }) {
 
     const { walletInfo } = useWalletInfo();
 
-    console.log(walletInfo);
+    const isEmbedded = !walletInfo && evmWallet;
 
     const isPending = status === "connecting";
 
@@ -37,10 +37,10 @@ export default function EngagementGate({ fid }: { fid: number | undefined }) {
     };
 
     useEffect(() => {
-        if (evmWallet && !isPending) {
+        if (evmWallet && !isPending && !isEmbedded) {
             handleAddToWaitlist(evmWallet);
         }
-    }, [evmWallet, isPending]);
+    }, [evmWallet, isPending, isEmbedded]);
 
     const [copied, setCopied] = useState(false);
 
@@ -113,9 +113,8 @@ export default function EngagementGate({ fid }: { fid: number | undefined }) {
                     </p>
 
                     <div className="flex flex-col gap-0 text-center items-center justify-center text-xs">
-                        <p>Wallet: {walletInfo?.name}</p>
-                        <p>Address: {evmWallet}</p>
-                        <p>Type: {walletInfo?.type}</p>
+                        <p>Your Address: </p>
+                        <p>{evmWallet}</p>
                     </div>
 
                     <button
@@ -140,11 +139,6 @@ export default function EngagementGate({ fid }: { fid: number | undefined }) {
                     <p className="w-fit text-center">
                         Now connect your wallet <br /> to join the waitlist.
                     </p>
-                    <div className="flex flex-col gap-0 text-center items-center justify-center text-xs">
-                        <p>Wallet: {walletInfo?.name}</p>
-                        <p>Address: {evmWallet}</p>
-                        <p>Type: {walletInfo?.type}</p>
-                    </div>
 
                     {!isFarcasterWalletDoesNotExist && (
                         <button
