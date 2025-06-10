@@ -1,4 +1,5 @@
-import React from "react";
+import React, { useState } from "react";
+import { APP_URL } from "~/lib/constants";
 
 interface HeaderProps {
     username: string | undefined;
@@ -6,6 +7,9 @@ interface HeaderProps {
 }
 
 const Header: React.FC<HeaderProps> = ({ username, userLogoUrl }) => {
+    const fallbackLogo = `${APP_URL}/user-logo.png`;
+    const [imgSrc, setImgSrc] = useState(userLogoUrl || fallbackLogo);
+
     return (
         <nav className="flex min-h-[56px] w-full justify-between items-center p-2.5 bg-white rounded-full shadow-xl">
             <div className="flex items-center gap-6">
@@ -20,9 +24,14 @@ const Header: React.FC<HeaderProps> = ({ username, userLogoUrl }) => {
             </div>
             {username ? (
                 <div className="flex items-center gap-2 rounded-full p-2 bg-background">
-                    {userLogoUrl ? (
-                        <img src={userLogoUrl} alt="user-logo" className="rounded-full max-w-[28px] max-h-[28px]" width={28} height={28} />
-                    ) : null}
+                    <img
+                        src={imgSrc}
+                        alt="user-logo"
+                        onError={() => setImgSrc(fallbackLogo)}
+                        className="rounded-full max-w-[28px] max-h-[28px]"
+                        width={28}
+                        height={28}
+                    />
                     <span className="text-black mr-1">{username}</span>
                 </div>
             ) : null}
