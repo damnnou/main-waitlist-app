@@ -31,14 +31,14 @@ export default function EngagementGate({ fid }: { fid: number | undefined }) {
 
     const { open } = useAppKit();
 
-    const handleAddToWaitlist = (address: string) => {
+    const handleAddToWaitlist = (address: string, wallet_type: string) => {
         if (!context) return;
-        addToWaitlist(context.user.fid, address, context.user.username);
+        addToWaitlist(context.user.fid, address, context.user.username, wallet_type);
     };
 
     useEffect(() => {
         if (evmWallet && !isPending && !isEmbedded) {
-            handleAddToWaitlist(evmWallet);
+            handleAddToWaitlist(evmWallet, "external");
         }
     }, [evmWallet, isPending, isEmbedded]);
 
@@ -143,7 +143,7 @@ export default function EngagementGate({ fid }: { fid: number | undefined }) {
                     {!isFarcasterWalletDoesNotExist && (
                         <button
                             disabled={isPending || !farcasterWallet}
-                            onClick={() => farcasterWallet && handleAddToWaitlist(farcasterWallet)}
+                            onClick={() => farcasterWallet && handleAddToWaitlist(farcasterWallet, "native")}
                             className="w-full max-w-64  flex duration-200 hover:scale-105 min-h-[56px] mx-auto rounded-xl shadow-lg items-center gap-2 justify-center bg-violet-500 text-white py-3 px-6  transition-all disabled:opacity-50 disabled:cursor-not-allowed "
                         >
                             <Zap size={18} /> Login with Farcaster
