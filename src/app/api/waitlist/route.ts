@@ -1,4 +1,5 @@
 import { NextRequest } from "next/server";
+import { checkUserEngagement } from "~/lib/checkUserEngagement";
 import { db } from "~/lib/firebaseAdmin";
 
 export async function POST(req: NextRequest) {
@@ -13,8 +14,15 @@ export async function POST(req: NextRequest) {
             });
         }
 
-        const docRef = db.collection("Waitlist").doc(String(fid));
+        const engagement = await checkUserEngagement(Number(fid));
+        if (!engagement.eligible) {
+            return new Response(JSON.stringify({ error: "User has not completed all required actions" }), {
+                status: 400,
+                headers: { "Content-Type": "application/json" },
+            });
+        }
 
+        const docRef = db.collection("Waitlist").doc(String(fid));
         await docRef.set({
             username: username || null,
             wallet_address,
@@ -26,7 +34,7 @@ export async function POST(req: NextRequest) {
             status: 200,
             headers: { "Content-Type": "application/json" },
         });
-    } catch (error: any) {
+    } catch (error) {
         console.error("Waitlist save error:", error);
         return new Response(JSON.stringify({ error: "Internal Server Error" }), {
             status: 500,

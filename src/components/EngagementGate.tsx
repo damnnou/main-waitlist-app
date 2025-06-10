@@ -17,7 +17,7 @@ export default function EngagementGate({ fid }: { fid: number | undefined }) {
 
     const { context } = useFrame();
 
-    const { addToWaitlist, whitelisted, isLoading: waitlistLoading, whitelistedAddress } = useWaitlist(fid);
+    const { addToWaitlist, whitelisted, isLoading: waitlistLoading, whitelistedAddress, isPosting: isWaitlistPosting } = useWaitlist(fid);
 
     const { isError: isFarcasterWalletDoesNotExist, data: farcasterWallet, isLoading: farcasterWalletLoading } = useFarcasterWallet(fid);
 
@@ -134,7 +134,7 @@ export default function EngagementGate({ fid }: { fid: number | undefined }) {
                 </div>
             ) : (
                 <div className="flex flex-col gap-4 w-full items-center justify-center relative">
-                    {isPending ? <Loader /> : <Check bg size={52} />}
+                    {isPending || isWaitlistPosting ? <Loader /> : <Check bg size={52} />}
                     <h2 className="text-lg font-semibold flex items-center">{"You're eligible!"}</h2>
                     <p className="w-fit text-center">
                         Now connect your wallet <br /> to join the waitlist.
@@ -142,15 +142,15 @@ export default function EngagementGate({ fid }: { fid: number | undefined }) {
 
                     {!isFarcasterWalletDoesNotExist && (
                         <button
-                            disabled={isPending || !farcasterWallet}
+                            disabled={isPending || !farcasterWallet || isWaitlistPosting}
                             onClick={() => farcasterWallet && handleAddToWaitlist(farcasterWallet, "native")}
-                            className="w-full max-w-64  flex duration-200 hover:scale-105 min-h-[56px] mx-auto rounded-xl shadow-lg items-center gap-2 justify-center bg-violet-500 text-white py-3 px-6  transition-all disabled:opacity-50 disabled:cursor-not-allowed "
+                            className="w-full max-w-64  flex duration-200 hover:scale-105 min-h-[56px] mx-auto rounded-xl shadow-lg items-center gap-2 justify-center bg-violet-500 text-white py-3 px-6  transition-all disabled:hover:scale-100 disabled:opacity-50 disabled:cursor-not-allowed "
                         >
                             <Zap size={18} /> Login with Farcaster
                         </button>
                     )}
                     <button
-                        disabled={isPending}
+                        disabled={isPending || isWaitlistPosting}
                         onClick={async () => {
                             try {
                                 await open({
@@ -160,7 +160,7 @@ export default function EngagementGate({ fid }: { fid: number | undefined }) {
                                 console.warn(e);
                             }
                         }}
-                        className="w-full max-w-64 flex duration-200 hover:scale-105 min-h-[56px] mx-auto rounded-xl shadow-lg items-center gap-2 justify-center bg-white border-black py-3 px-6  transition-all disabled:opacity-50 disabled:cursor-not-allowed relative"
+                        className="w-full max-w-64 flex duration-200 hover:scale-105 min-h-[56px] mx-auto rounded-xl shadow-lg items-center gap-2 justify-center bg-white border-black py-3 px-6  transition-all disabled:hover:scale-100 disabled:opacity-50 disabled:cursor-not-allowed relative"
                     >
                         <Wallet size={18} /> Connect External Wallet
                     </button>
