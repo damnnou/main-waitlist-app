@@ -3,8 +3,9 @@ import { NextRequest } from "next/server";
 import { MAIN_CHANNEL_ID, TARGET_CAST_HASH } from "~/lib/constants";
 
 const FARCASTER_BEARER_AUTH = process.env.FARCASTER_BEARER_AUTH;
-
 const FARCASTER_APP_BEARER = process.env.FARCASTER_APP_BEARER;
+
+const AXIOS_TIMEOUT = 5000;
 
 export async function GET(req: NextRequest) {
     const { searchParams } = new URL(req.url);
@@ -21,6 +22,7 @@ export async function GET(req: NextRequest) {
         const { data: subscribedToMainData } = await axios.get(
             `https://api.farcaster.xyz/v1/user-channel?fid=${fid}&channelId=${MAIN_CHANNEL_ID}`,
             {
+                timeout: AXIOS_TIMEOUT,
                 headers: {
                     "Content-Type": "application/json",
                     Authorization: FARCASTER_APP_BEARER,
@@ -30,6 +32,7 @@ export async function GET(req: NextRequest) {
         const didSuscribed = subscribedToMainData.result.following;
 
         const { data: userLikes } = await axios.get(`https://client.farcaster.xyz/v2/user-liked-casts?fid=${fid}&limit=50`, {
+            timeout: AXIOS_TIMEOUT,
             headers: {
                 "Content-Type": "application/json",
                 Authorization: FARCASTER_BEARER_AUTH,
@@ -40,6 +43,7 @@ export async function GET(req: NextRequest) {
         const didLike = likes.some((like: any) => like.hash === TARGET_CAST_HASH);
 
         const { data: castData } = await axios.get(`https://client.farcaster.xyz/v2/casts?fid=${fid}&limit=50`, {
+            timeout: AXIOS_TIMEOUT,
             headers: {
                 "Content-Type": "application/json",
                 Authorization: FARCASTER_APP_BEARER,
