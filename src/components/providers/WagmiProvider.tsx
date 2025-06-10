@@ -8,18 +8,18 @@ import { WALLET_CONNECT_PROJECT_ID } from "~/lib/constants";
 
 const queryClient = new QueryClient();
 
-const networks: AppKitNetwork[] = [mainnet, base, optimism];
+const networks: [AppKitNetwork, ...AppKitNetwork[]] = [mainnet, base, optimism];
 
 const wagmiAdapter = new WagmiAdapter({
     networks,
-    projectId: WALLET_CONNECT_PROJECT_ID!,
+    projectId: WALLET_CONNECT_PROJECT_ID,
     ssr: true,
 });
 
 createAppKit({
     adapters: [wagmiAdapter],
-    networks: [networks[0]],
-    projectId: WALLET_CONNECT_PROJECT_ID!,
+    networks,
+    projectId: WALLET_CONNECT_PROJECT_ID,
 });
 
 export default function Provider({ children }: { children: React.ReactNode }) {
