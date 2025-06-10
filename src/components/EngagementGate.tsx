@@ -9,9 +9,8 @@ import { useWaitlist } from "~/hooks/useWaitlist";
 import { Star } from "./ui/Star";
 import { Loader } from "./ui/Loader";
 import { useFarcasterWallet } from "~/hooks/useFarcasterWallet";
-import { useConnect } from "wagmi";
 import { Check } from "./ui/Check";
-import { useAppKit, useAppKitAccount } from "@reown/appkit/react";
+import { useAppKit, useAppKitAccount, useWalletInfo } from "@reown/appkit/react";
 
 export default function EngagementGate({ fid }: { fid: number | undefined }) {
     const { eligible, didLike, didRecast, didSuscribed, refetch, isLoading: actionsLoading, isNewDataLoading } = useEngagementActions(fid);
@@ -22,9 +21,13 @@ export default function EngagementGate({ fid }: { fid: number | undefined }) {
 
     const { isError: isFarcasterWalletDoesNotExist, data: farcasterWallet, isLoading: farcasterWalletLoading } = useFarcasterWallet(fid);
 
-    const { isPending } = useConnect();
+    const { address: evmWallet, status } = useAppKitAccount();
 
-    const { address: evmWallet } = useAppKitAccount();
+    const { walletInfo } = useWalletInfo();
+
+    console.log(walletInfo);
+
+    const isPending = status === "connecting";
 
     const { open } = useAppKit();
 
@@ -34,10 +37,10 @@ export default function EngagementGate({ fid }: { fid: number | undefined }) {
     };
 
     useEffect(() => {
-        if (evmWallet) {
+        if (evmWallet && !isPending) {
             handleAddToWaitlist(evmWallet);
         }
-    }, [evmWallet]);
+    }, [evmWallet, isPending]);
 
     const [copied, setCopied] = useState(false);
 
@@ -109,6 +112,14 @@ export default function EngagementGate({ fid }: { fid: number | undefined }) {
                         {"We'll reach out before the next drop."}
                     </p>
 
+                    {walletInfo && (
+                        <div className="flex flex-col gap-0">
+                            <p>Wallet: {walletInfo.name}</p>
+                            <p>Address: {evmWallet}</p>
+                            <p>Type: {walletInfo.type}</p>
+                        </div>
+                    )}
+
                     <button
                         onClick={handleShare}
                         className="w-full max-w-64 flex duration-200 hover:scale-105 min-h-[56px] mx-auto rounded-xl shadow-lg items-center gap-2 justify-center bg-violet-500 text-white py-3 px-6  transition-all disabled:opacity-50 disabled:cursor-not-allowed relative"
@@ -131,6 +142,13 @@ export default function EngagementGate({ fid }: { fid: number | undefined }) {
                     <p className="w-fit text-center">
                         Now connect your wallet <br /> to join the waitlist.
                     </p>
+                    {walletInfo && (
+                        <div className="flex flex-col gap-0">
+                            <p>Wallet: {walletInfo.name}</p>
+                            <p>Address: {evmWallet}</p>
+                            <p>Type: {walletInfo.type}</p>
+                        </div>
+                    )}
 
                     {!isFarcasterWalletDoesNotExist && (
                         <button
@@ -143,10 +161,14 @@ export default function EngagementGate({ fid }: { fid: number | undefined }) {
                     )}
                     <button
                         disabled={isPending}
-                        onClick={() => {
-                            open({
-                                view: "Connect",
-                            });
+                        onClick={async () => {
+                            try {
+                                await open({
+                                    view: "Connect",
+                                });
+                            } catch (e) {
+                                console.warn(e);
+                            }
                         }}
                         className="w-full max-w-64 flex duration-200 hover:scale-105 min-h-[56px] mx-auto rounded-xl shadow-lg items-center gap-2 justify-center bg-white border-black py-3 px-6  transition-all disabled:opacity-50 disabled:cursor-not-allowed relative"
                     >
