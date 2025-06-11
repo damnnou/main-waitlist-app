@@ -4,13 +4,15 @@ import { Button } from "./ui/Button";
 import { RotateCw, Share, Wallet, Zap } from "lucide-react";
 import { cn } from "~/lib/utils";
 import { useFrame } from "./providers/FrameProvider";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { useWaitlist } from "~/hooks/useWaitlist";
 import { Star } from "./ui/Star";
 import { Loader } from "./ui/Loader";
 import { useFarcasterWallet } from "~/hooks/useFarcasterWallet";
 import { Check } from "./ui/Check";
 import { useAppKit, useAppKitAccount, useWalletInfo } from "@reown/appkit/react";
+import sdk from "@farcaster/frame-sdk";
+import { APP_URL } from "~/lib/constants";
 
 export default function EngagementGate({ fid }: { fid: number | undefined }) {
     const { eligible, didLike, didRecast, didSuscribed, refetch, isLoading: actionsLoading, isNewDataLoading } = useEngagementActions(fid);
@@ -42,28 +44,17 @@ export default function EngagementGate({ fid }: { fid: number | undefined }) {
         }
     }, [evmWallet, isPending, isEmbedded]);
 
-    const [copied, setCopied] = useState(false);
-
     const handleShare = async () => {
-        const shareData = {
-            title: "Check out this Mini App",
-            text: "Thanks for joining the waitlist! Check this out:",
-            url: window.location.href,
-        };
+        sdk.actions.composeCast({
+            text: `AI isn't assisting. It's the CEO now.
 
-        if (navigator.clipboard) {
-            try {
-                await navigator.clipboard.writeText(shareData.url);
-                setCopied(true);
-                setTimeout(() => setCopied(false), 2000);
-            } catch (err) {
-                console.error("Failed to copy link:", err);
-                alert("Failed to copy link");
-            }
-        } else {
-            alert("Sharing not supported on this browser");
-        }
+Open the mini-app. Register your wallet. Enjoy priority access.
+
+@maindex — powered by Algebra Labs.`,
+            embeds: [APP_URL],
+        });
     };
+
     const isLoading = waitlistLoading || actionsLoading || farcasterWalletLoading;
 
     if (isLoading)
@@ -121,15 +112,7 @@ export default function EngagementGate({ fid }: { fid: number | undefined }) {
                         onClick={handleShare}
                         className="w-full max-w-64 flex duration-200 hover:scale-105 min-h-[56px] mx-auto rounded-xl shadow-lg items-center gap-2 justify-center bg-violet-500 text-white py-3 px-6  transition-all disabled:opacity-50 disabled:cursor-not-allowed relative"
                     >
-                        <Share size={18} /> Share this Mini App
-                        {copied && (
-                            <span
-                                className="absolute -top-8 left-1/2 -translate-x-1/2 bg-black text-white text-xs px-3 py-1 rounded shadow-lg select-none pointer-events-none"
-                                style={{ whiteSpace: "nowrap" }}
-                            >
-                                Link copied!
-                            </span>
-                        )}
+                        <Share size={18} /> Share Mini App
                     </button>
                 </div>
             ) : (
@@ -169,26 +152,3 @@ export default function EngagementGate({ fid }: { fid: number | undefined }) {
         </div>
     );
 }
-
-// : !whitelisted ? (
-//                 <div className="flex flex-col gap-4 w-full  items-center justify-center">
-//                     {Boolean(session) || evmWalletLoading || signingIn ? (
-//                         <div className="relative p-2 flex items-center justify-center min-w-[42px] min-h-[42px] rounded-full bg-neutral-200">
-//                             <Loader />
-//                         </div>
-//                     ) : (
-//                         <Check bg size={52} />
-//                     )}
-//                     <h2 className="text-lg font-semibold flex items-center">{"You're eligible!"}</h2>
-//                     <p className="w-fit text-center">
-//                         Now connect your Farcaster <br /> to join the waitlist.
-//                     </p>
-//                     <button
-//                         disabled={Boolean(session) || evmWalletLoading || signingIn}
-//                         onClick={handleSignIn}
-//                         className="w-full max-w-64  flex duration-200 hover:scale-105 min-h-[56px] mx-auto rounded-xl shadow-lg items-center gap-2 justify-center bg-violet-500 text-white py-3 px-6  transition-all disabled:opacity-50 disabled:cursor-not-allowed "
-//                     >
-//                         <Zap size={18} /> Login with Farcaster
-//                     </button>
-//                     {signInFailure && <p className="text-red-500 text-center">{signInFailure}</p>}
-//                 </div>
