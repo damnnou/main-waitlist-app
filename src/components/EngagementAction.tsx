@@ -2,7 +2,7 @@ import { ArrowUpRight } from "lucide-react";
 import { Check } from "./ui/Check";
 import { cn } from "~/lib/utils";
 import sdk from "@farcaster/frame-sdk";
-import { TARGET_CAST_HASH } from "~/lib/constants";
+import { APP_URL, TARGET_CAST_HASH } from "~/lib/constants";
 
 const titles = {
     like: "Like",
@@ -106,7 +106,7 @@ const handleAction = (type: "like" | "recast" | "subscribe") => {
 Be the MAIN character of DeFi. Hit the mini-app, register your wallet, and lock in priority access.
 
 @maindex — powered by Algebra Labs.`,
-                embeds: [`${TARGET_CAST_HASH}`],
+                embeds: [APP_URL, `${TARGET_CAST_HASH}`],
             });
             break;
         case "subscribe":
