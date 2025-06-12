@@ -14,21 +14,11 @@ export function useEngagementActions(fid: number | undefined) {
         data,
         isLoading,
         mutate: originalMutate,
-    } = useSWR<EngagementActions>(
-        ["checkActions", fid],
-        async () => {
-            if (!fid) return null;
-            const { data } = await axios.get(`/api/check-actions?fid=${fid}`);
-            return data;
-        },
-        {
-            refreshInterval: 5000,
-            revalidateOnMount: true,
-            revalidateOnReconnect: true,
-            revalidateOnFocus: true,
-            revalidateIfStale: true,
-        }
-    );
+    } = useSWR<EngagementActions>(["checkActions", fid], async () => {
+        if (!fid) return null;
+        const { data } = await axios.get(`/api/check-actions?fid=${fid}`);
+        return data;
+    });
 
     const lastMutateRef = useRef(0);
     const MIN_INTERVAL = 3000;
